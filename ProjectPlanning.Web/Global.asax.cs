@@ -18,7 +18,6 @@ namespace ProjectPlanning.Web
             AreaRegistration.RegisterAllAreas();
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
-            BundleConfig.RegisterBundles(System.Web.Optimization.BundleTable.Bundles);
 
             Database.SetInitializer(new MigrateDatabaseToLatestVersion<ProjectPlanningDbContext, Configuration>());
 

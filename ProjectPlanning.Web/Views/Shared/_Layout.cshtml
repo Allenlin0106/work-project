@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewBag.Title - 專案進度規劃系統</title>
-    @Styles.Render("~/Content/gantt/css")
+    <link href="@Url.Content("~/Content/gantt/gantt.css")" rel="stylesheet" />
     <style>
         body { font-family: "Segoe UI", "Microsoft JhengHei", sans-serif; margin: 0; background: #f6f7f9; color: #222; }
         header { background: #1f3a68; color: #fff; padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; }
@@ -36,7 +36,7 @@
     <main>
         @RenderBody()
     </main>
-    @Scripts.Render("~/Scripts/gantt/js")
+    <script src="@Url.Content("~/Scripts/gantt/gantt.js")"></script>
     @RenderSection("scripts", required: false)
 </body>
 </html>
