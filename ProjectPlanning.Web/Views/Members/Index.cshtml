@@ -1,0 +1,46 @@
+@model IEnumerable<ProjectPlanning.Entities.Dtos.MemberDto>
+@{ ViewBag.Title = "專案成員"; var projectId = (int)ViewBag.ProjectId; }
+
+<h2>專案成員</h2>
+<p>@Html.ActionLink("返回專案", "Details", "Projects", new { id = projectId }, new { @class = "btn secondary" })</p>
+
+<h3>加入成員</h3>
+@using (Html.BeginForm("Add", "Members"))
+{
+    @Html.AntiForgeryToken()
+    @Html.Hidden("projectId", projectId)
+    <label>帳號（DOMAIN\user）</label>
+    <input name="windowsAccount" />
+    <label>角色</label>
+    <select name="role">
+        @foreach (var r in System.Enum.GetValues(typeof(ProjectPlanning.Entities.Enums.ProjectRole)))
+        {
+            <option value="@((int)r)">@r</option>
+        }
+    </select>
+    <button type="submit" class="btn">加入</button>
+}
+
+<table class="data" style="margin-top:16px">
+    <thead><tr><th>帳號</th><th>顯示名稱</th><th>角色</th><th>加入時間</th><th></th></tr></thead>
+    <tbody>
+    @foreach (var m in Model)
+    {
+        <tr>
+            <td>@m.WindowsAccount</td>
+            <td>@m.DisplayName</td>
+            <td>@m.Role</td>
+            <td>@m.AddedUtc.ToString("yyyy-MM-dd HH:mm")</td>
+            <td>
+                @using (Html.BeginForm("Remove", "Members", FormMethod.Post, new { @class = "inline", onsubmit = "return confirm('移除成員？');" }))
+                {
+                    @Html.AntiForgeryToken()
+                    @Html.Hidden("memberId", m.Id)
+                    @Html.Hidden("projectId", projectId)
+                    <button type="submit" class="btn danger">移除</button>
+                }
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>

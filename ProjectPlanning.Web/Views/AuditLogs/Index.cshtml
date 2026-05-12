@@ -1,0 +1,85 @@
+@model ProjectPlanning.Web.Models.AuditLogFilterVM
+@{ ViewBag.Title = "軌跡查詢"; }
+
+<h2>軌跡查詢</h2>
+
+@using (Html.BeginForm("Index", "AuditLogs", FormMethod.Get))
+{
+    <div>
+        <label>帳號</label> @Html.TextBoxFor(m => m.WindowsAccount)
+        <label>動作</label>
+        <select name="@Html.NameFor(m => m.Action)">
+            <option value="">(全部)</option>
+            <option value="Login" selected="@(Model.Action == "Login")">Login</option>
+            <option value="Logout" selected="@(Model.Action == "Logout")">Logout</option>
+            <option value="Create" selected="@(Model.Action == "Create")">Create</option>
+            <option value="Update" selected="@(Model.Action == "Update")">Update</option>
+            <option value="Delete" selected="@(Model.Action == "Delete")">Delete</option>
+            <option value="View" selected="@(Model.Action == "View")">View</option>
+            <option value="Export" selected="@(Model.Action == "Export")">Export</option>
+        </select>
+        <label>EntityType</label> @Html.TextBoxFor(m => m.EntityType)
+        <label>EntityKey</label> @Html.TextBoxFor(m => m.EntityKey)
+    </div>
+    <div>
+        <label>從</label> @Html.TextBoxFor(m => m.FromUtc, "{0:yyyy-MM-ddTHH:mm}", new { type = "datetime-local" })
+        <label>到</label> @Html.TextBoxFor(m => m.ToUtc, "{0:yyyy-MM-ddTHH:mm}", new { type = "datetime-local" })
+        <button type="submit" class="btn">查詢</button>
+    </div>
+}
+
+@if (Model.Result != null)
+{
+    <p style="margin-top:12px">共 @Model.Result.TotalCount 筆，第 @Model.Result.Page / @Model.Result.PageCount 頁</p>
+    <table class="data">
+        <thead>
+            <tr><th>時間 (UTC)</th><th>帳號</th><th>動作</th><th>Entity</th><th>Key</th><th>Action</th><th>IP</th><th>備註</th><th>JSON</th></tr>
+        </thead>
+        <tbody>
+        @foreach (var a in Model.Result.Items)
+        {
+            <tr>
+                <td>@a.TimestampUtc.ToString("yyyy-MM-dd HH:mm:ss")</td>
+                <td>@a.WindowsAccount</td>
+                <td>@a.Action</td>
+                <td>@a.EntityType</td>
+                <td>@a.EntityKey</td>
+                <td>@a.ControllerAction</td>
+                <td>@a.IpAddress</td>
+                <td>@a.Notes</td>
+                <td>
+                    @if (!string.IsNullOrEmpty(a.BeforeJson) || !string.IsNullOrEmpty(a.AfterJson))
+                    {
+                        <details>
+                            <summary>檢視</summary>
+                            <div><strong>Before</strong><pre>@a.BeforeJson</pre></div>
+                            <div><strong>After</strong><pre>@a.AfterJson</pre></div>
+                        </details>
+                    }
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+
+    <div class="toolbar" style="margin-top:12px">
+        @if (Model.Page > 1)
+        {
+            @Html.ActionLink("上一頁", "Index", new {
+                WindowsAccount = Model.WindowsAccount, Action = Model.Action,
+                EntityType = Model.EntityType, EntityKey = Model.EntityKey,
+                FromUtc = Model.FromUtc, ToUtc = Model.ToUtc,
+                Page = Model.Page - 1, PageSize = Model.PageSize
+            }, new { @class = "btn secondary" })
+        }
+        @if (Model.Page < Model.Result.PageCount)
+        {
+            @Html.ActionLink("下一頁", "Index", new {
+                WindowsAccount = Model.WindowsAccount, Action = Model.Action,
+                EntityType = Model.EntityType, EntityKey = Model.EntityKey,
+                FromUtc = Model.FromUtc, ToUtc = Model.ToUtc,
+                Page = Model.Page + 1, PageSize = Model.PageSize
+            }, new { @class = "btn secondary" })
+        }
+    </div>
+}

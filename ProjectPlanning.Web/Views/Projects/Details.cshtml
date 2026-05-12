@@ -1,0 +1,65 @@
+@model ProjectPlanning.Entities.Dtos.ProjectDetailDto
+@{ ViewBag.Title = Model.Name; }
+
+<h2>@Model.Name <small style="font-weight:normal;color:#666">(@Model.Status)</small></h2>
+<p>@Model.Description</p>
+<p>期間：@Model.StartDate.ToString("yyyy-MM-dd") ~ @Model.EndDate.ToString("yyyy-MM-dd")<br/>
+   負責人：@Model.OwnerDisplayName</p>
+
+<div class="toolbar">
+    @Html.ActionLink("編輯", "Edit", new { id = Model.Id }, new { @class = "btn" })
+    @Html.ActionLink("甘特圖", "Index", "Gantt", new { projectId = Model.Id }, new { @class = "btn secondary" })
+    @Html.ActionLink("匯出 PDF", "ProjectPdf", "Export", new { id = Model.Id }, new { @class = "btn secondary" })
+    @Html.ActionLink("成員", "Index", "Members", new { projectId = Model.Id }, new { @class = "btn secondary" })
+    @Html.ActionLink("新增任務", "Create", "Tasks", new { projectId = Model.Id }, new { @class = "btn secondary" })
+    @using (Html.BeginForm("Delete", "Projects", FormMethod.Post, new { @class = "inline", onsubmit = "return confirm('確定刪除？');" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.Hidden("id", Model.Id)
+        <button type="submit" class="btn danger">刪除專案</button>
+    }
+</div>
+
+<h3>任務</h3>
+<table class="data">
+    <thead><tr><th>順序</th><th>名稱</th><th>負責人</th><th>開始</th><th>結束</th><th>進度</th><th></th></tr></thead>
+    <tbody>
+    @foreach (var t in Model.Tasks)
+    {
+        <tr>
+            <td>@t.SortOrder</td>
+            <td>@t.Name</td>
+            <td>@t.AssigneeDisplayName</td>
+            <td>@t.StartDate.ToString("yyyy-MM-dd")</td>
+            <td>@t.EndDate.ToString("yyyy-MM-dd")</td>
+            <td>@t.ProgressPercent%</td>
+            <td>
+                @Html.ActionLink("編輯", "Edit", "Tasks", new { id = t.Id, projectId = Model.Id }, new { @class = "btn secondary" })
+                @using (Html.BeginForm("Delete", "Tasks", FormMethod.Post, new { @class = "inline", onsubmit = "return confirm('確定刪除？');" }))
+                {
+                    @Html.AntiForgeryToken()
+                    @Html.Hidden("id", t.Id)
+                    @Html.Hidden("projectId", Model.Id)
+                    <button type="submit" class="btn danger">刪除</button>
+                }
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+<h3>成員</h3>
+<table class="data">
+    <thead><tr><th>帳號</th><th>顯示名稱</th><th>角色</th><th>加入時間</th></tr></thead>
+    <tbody>
+    @foreach (var m in Model.Members)
+    {
+        <tr>
+            <td>@m.WindowsAccount</td>
+            <td>@m.DisplayName</td>
+            <td>@m.Role</td>
+            <td>@m.AddedUtc.ToString("yyyy-MM-dd HH:mm")</td>
+        </tr>
+    }
+    </tbody>
+</table>

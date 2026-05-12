@@ -1,0 +1,25 @@
+@model ProjectPlanning.Entities.Dtos.GanttDataDto
+@using Newtonsoft.Json
+@{
+    ViewBag.Title = Model.ProjectName + " - 甘特圖";
+    var json = JsonConvert.SerializeObject(Model);
+}
+
+<h2>@Model.ProjectName <small style="font-weight:normal;color:#666">甘特圖</small></h2>
+<div class="toolbar">
+    @Html.ActionLink("返回專案", "Details", "Projects", new { id = Model.ProjectId }, new { @class = "btn secondary" })
+    @Html.ActionLink("匯出 PDF", "ProjectPdf", "Export", new { id = Model.ProjectId }, new { @class = "btn" })
+</div>
+
+<div id="gantt-container"></div>
+<script id="gantt-data" type="application/json">@Html.Raw(json)</script>
+
+@section scripts {
+<script>
+    (function () {
+        var raw = document.getElementById('gantt-data').textContent;
+        var data = JSON.parse(raw);
+        PlanningGantt.render(document.getElementById('gantt-container'), data, { dayWidth: 24, rowHeight: 28 });
+    })();
+</script>
+}

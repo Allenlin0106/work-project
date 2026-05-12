@@ -1,0 +1,21 @@
+@model ProjectPlanning.Entities.Dtos.TaskEditDto
+@{ ViewBag.Title = Model.Id == 0 ? "新增任務" : "編輯任務"; }
+
+<h2>@ViewBag.Title</h2>
+@using (Html.BeginForm(Model.Id == 0 ? "Create" : "Edit", "Tasks"))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(m => m.Id)
+    @Html.HiddenFor(m => m.ProjectId)
+    <div>@Html.LabelFor(m => m.Name) @Html.TextBoxFor(m => m.Name)</div>
+    <div>@Html.LabelFor(m => m.StartDate) @Html.TextBoxFor(m => m.StartDate, "{0:yyyy-MM-dd}", new { type = "date" })</div>
+    <div>@Html.LabelFor(m => m.EndDate) @Html.TextBoxFor(m => m.EndDate, "{0:yyyy-MM-dd}", new { type = "date" })</div>
+    <div>@Html.LabelFor(m => m.ProgressPercent) @Html.TextBoxFor(m => m.ProgressPercent, new { type = "number", min = 0, max = 100 })</div>
+    <div>@Html.LabelFor(m => m.SortOrder) @Html.TextBoxFor(m => m.SortOrder, new { type = "number" })</div>
+    <div>@Html.LabelFor(m => m.AssigneeId) @Html.TextBoxFor(m => m.AssigneeId, new { type = "number" })</div>
+    <div>@Html.LabelFor(m => m.ParentTaskId) @Html.TextBoxFor(m => m.ParentTaskId, new { type = "number" })</div>
+    <div style="margin-top:12px">
+        <button type="submit" class="btn">儲存</button>
+        @Html.ActionLink("取消", "Details", "Projects", new { id = Model.ProjectId }, new { @class = "btn secondary" })
+    </div>
+}

@@ -1,0 +1,16 @@
+@model ProjectPlanning.Entities.Dtos.ProjectEditDto
+@{ ViewBag.Title = "編輯專案"; }
+
+<h2>編輯專案</h2>
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(m => m.Id)
+    <div>@Html.LabelFor(m => m.Name) @Html.TextBoxFor(m => m.Name) @Html.ValidationMessageFor(m => m.Name)</div>
+    <div>@Html.LabelFor(m => m.Description) @Html.TextAreaFor(m => m.Description, new { rows = 4, cols = 60 })</div>
+    <div>@Html.LabelFor(m => m.StartDate) @Html.TextBoxFor(m => m.StartDate, "{0:yyyy-MM-dd}", new { type = "date" })</div>
+    <div>@Html.LabelFor(m => m.EndDate) @Html.TextBoxFor(m => m.EndDate, "{0:yyyy-MM-dd}", new { type = "date" })</div>
+    <div>@Html.LabelFor(m => m.Status) @Html.EnumDropDownListFor(m => m.Status)</div>
+    <div style="margin-top:12px"><button type="submit" class="btn">儲存</button>
+    @Html.ActionLink("取消", "Details", new { id = Model.Id }, new { @class = "btn secondary" })</div>
+}
