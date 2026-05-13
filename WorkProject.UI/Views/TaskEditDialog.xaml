@@ -1,0 +1,61 @@
+<Window x:Class="WorkProject.UI.Views.TaskEditDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Task"
+        Width="480" Height="460"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="NoResize">
+    <Grid Margin="16">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Grid.Row="0" Text="Title"/>
+        <TextBox Grid.Row="1" Text="{Binding Title, UpdateSourceTrigger=PropertyChanged}" Margin="0,2,0,8"/>
+
+        <TextBlock Grid.Row="2" Text="Description"/>
+        <TextBox Grid.Row="3" Text="{Binding Description, UpdateSourceTrigger=PropertyChanged}"
+                 AcceptsReturn="True" Height="80" TextWrapping="Wrap" Margin="0,2,0,8"/>
+
+        <Grid Grid.Row="4" Margin="0,0,0,8">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <StackPanel Grid.Column="0">
+                <TextBlock Text="Start"/>
+                <DatePicker SelectedDate="{Binding StartDate}"/>
+            </StackPanel>
+            <StackPanel Grid.Column="1" Margin="8,0,0,0">
+                <TextBlock Text="End"/>
+                <DatePicker SelectedDate="{Binding EndDate}"/>
+            </StackPanel>
+        </Grid>
+
+        <Grid Grid.Row="5">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <StackPanel Grid.Column="0">
+                <TextBlock Text="Progress %"/>
+                <TextBox Text="{Binding ProgressPercent, UpdateSourceTrigger=PropertyChanged}"/>
+            </StackPanel>
+            <StackPanel Grid.Column="1" Margin="8,0,0,0">
+                <CheckBox Content="Is milestone" IsChecked="{Binding IsMilestone}" Margin="0,16,0,0"/>
+            </StackPanel>
+        </Grid>
+
+        <StackPanel Grid.Row="7" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,12,0,0">
+            <Button Content="Cancel" Command="{Binding CancelCommand}" Width="90" Margin="0,0,8,0"/>
+            <Button Content="Save" Command="{Binding SaveCommand}" Width="90" Style="{StaticResource PrimaryButton}" IsDefault="True"/>
+        </StackPanel>
+    </Grid>
+</Window>
