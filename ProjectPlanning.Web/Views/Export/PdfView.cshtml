@@ -1,0 +1,63 @@
+@model ProjectPlanning.Entities.Dtos.GanttDataDto
+@using Newtonsoft.Json
+@{
+    Layout = null;
+    var json = JsonConvert.SerializeObject(Model);
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>@Model.ProjectName - 進度報表</title>
+    <style>
+        body { font-family: "Microsoft JhengHei", "Segoe UI", sans-serif; margin: 16px; color: #222; }
+        h1 { font-size: 20pt; margin-bottom: 4px; }
+        .meta { color: #666; margin-bottom: 12px; font-size: 10pt; }
+        table.summary { border-collapse: collapse; width: 100%; margin-bottom: 16px; font-size: 10pt; }
+        table.summary th, table.summary td { border: 1px solid #888; padding: 4px 8px; }
+        table.summary th { background: #eef2f8; text-align: left; }
+        .gantt-bar { stroke: #1f3a68; fill: #2f5fa9; }
+        .gantt-progress { fill: #6ea1d8; }
+        .gantt-text { font-size: 10px; fill: #fff; }
+        .gantt-row-label { font-size: 10px; fill: #222; }
+        .gantt-grid { stroke: #d6dbe3; stroke-width: 0.5; }
+        .gantt-today { stroke: #b3261e; stroke-width: 1; }
+        .gantt-axis { font-size: 9px; fill: #444; }
+        .gantt-arrow { stroke: #444; stroke-width: 1; fill: none; }
+    </style>
+</head>
+<body>
+    <h1>@Model.ProjectName</h1>
+    <div class="meta">
+        期間：@Model.StartDate.ToString("yyyy-MM-dd") ~ @Model.EndDate.ToString("yyyy-MM-dd")
+        &nbsp;|&nbsp; 產出時間：@DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm") UTC
+    </div>
+
+    <table class="summary">
+        <thead><tr><th>#</th><th>任務</th><th>開始</th><th>結束</th><th>進度</th></tr></thead>
+        <tbody>
+        @foreach (var t in Model.Tasks)
+        {
+            <tr>
+                <td>@t.SortOrder</td>
+                <td>@t.Name</td>
+                <td>@t.StartDate.ToString("yyyy-MM-dd")</td>
+                <td>@t.EndDate.ToString("yyyy-MM-dd")</td>
+                <td>@t.ProgressPercent%</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+
+    <div id="gantt-container"></div>
+    <script id="gantt-data" type="application/json">@Html.Raw(json)</script>
+    <script src="@Url.Content("~/Scripts/gantt/gantt.js")"></script>
+    <script>
+        (function () {
+            var raw = document.getElementById('gantt-data').textContent;
+            var data = JSON.parse(raw);
+            PlanningGantt.render(document.getElementById('gantt-container'), data, { dayWidth: 22, rowHeight: 22, forPrint: true });
+        })();
+    </script>
+</body>
+</html>
